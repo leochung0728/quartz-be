@@ -23,18 +23,10 @@ public class JobController {
 
 	private final SchedulerJobService scheduleJobService;
 
-	@RequestMapping(value = "/saveOrUpdate", method = { RequestMethod.GET, RequestMethod.POST })
-	public Object saveOrUpdate(SchedulerJobInfo job) {
-		log.info("params, job = {}", job);
-		Message message = Message.failure();
-		try {
-			scheduleJobService.saveOrupdate(job);
-			message = Message.success();
-		} catch (Exception e) {
-			message.setMsg(e.getMessage());
-			log.error("updateCron ex:", e);
-		}
-		return message;
+	@RequestMapping("/getAllJobs")
+	public Object getAllJobs() throws SchedulerException {
+		List<SchedulerJobInfo> jobList = scheduleJobService.getAllJobList();
+		return jobList;
 	}
 
 	@RequestMapping("/metaData")
@@ -43,10 +35,32 @@ public class JobController {
 		return metaData;
 	}
 
-	@RequestMapping("/getAllJobs")
-	public Object getAllJobs() throws SchedulerException {
-		List<SchedulerJobInfo> jobList = scheduleJobService.getAllJobList();
-		return jobList;
+	@RequestMapping(value = "/addJob", method = { RequestMethod.GET, RequestMethod.POST })
+	public Object addJob(SchedulerJobInfo job) {
+		log.info("params, job = {}", job);
+		Message message = Message.failure();
+		try {
+			scheduleJobService.addJob(job);
+			message = Message.success();
+		} catch (Exception e) {
+			message.setMsg(e.getMessage());
+			log.error("addJob ex:", e);
+		}
+		return message;
+	}
+
+	@RequestMapping(value = "/updateJob", method = { RequestMethod.GET, RequestMethod.POST })
+	public Object updateJob(SchedulerJobInfo job) {
+		log.info("params, job = {}", job);
+		Message message = Message.failure();
+		try {
+			scheduleJobService.updateJob(job);
+			message = Message.success();
+		} catch (Exception e) {
+			message.setMsg(e.getMessage());
+			log.error("updateCron ex:", e);
+		}
+		return message;
 	}
 
 	@RequestMapping(value = "/runJob", method = { RequestMethod.GET, RequestMethod.POST })
@@ -54,7 +68,7 @@ public class JobController {
 		log.info("params, job = {}", job);
 		Message message = Message.failure();
 		try {
-			scheduleJobService.startJobNow(job);
+			scheduleJobService.triggerJob(job);
 			message = Message.success();
 		} catch (Exception e) {
 			message.setMsg(e.getMessage());

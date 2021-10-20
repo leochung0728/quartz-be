@@ -36,10 +36,11 @@ public class JobScheduleCreator {
 		return factoryBean.getObject();
 	}
 
-	public CronTrigger createCronTrigger(String triggerName, Date startTime, String cronExpression,
+	public CronTrigger createCronTrigger(String triggerName, String triggerGroup, Date startTime, String cronExpression,
 			int misFireInstruction) {
 		CronTriggerFactoryBean factoryBean = new CronTriggerFactoryBean();
 		factoryBean.setName(triggerName);
+		factoryBean.setGroup(triggerGroup);
 		factoryBean.setStartTime(startTime);
 		factoryBean.setCronExpression(cronExpression);
 		factoryBean.setMisfireInstruction(misFireInstruction);

@@ -1,31 +1,29 @@
 package com.leochung0728.quartz.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.Date;
+import java.util.List;
+
+import org.quartz.JobDataMap;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString
 @Getter
 @Setter
-@Entity
-@Table(name = "scheduler_job_info")
+@NoArgsConstructor
+@ToString(onlyExplicitlyIncluded = true)
 public class SchedulerJobInfo {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String jobId;
-	private String jobName;
+	@ToString.Include
 	private String jobGroup;
-	private String jobStatus;
-	private String jobClass;
+	@ToString.Include
+	private String jobName;
 	private String cronExpression;
+	private String jobStatus;
 	private String desc;
-	private String interfaceName;
-	private Boolean cronJob;
+	private JobDataMap dataMap;
+	private Date previousFirstTime;
+	private Date nextFireTime;
+	private List<Date> fireTimes;
 }
