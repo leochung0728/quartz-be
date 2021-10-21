@@ -16,7 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.leochung0728.quartz.util.SecurityUtils;
 
 @Entity
-@Table(name = "WebListEntryMASearch")
+@Table(name = "WebDetailEntryMASearch")
 @EntityListeners(AuditingEntityListener.class)
 public class WebDetailEntryMASearch {
 	@Id
