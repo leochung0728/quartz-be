@@ -1,9 +1,11 @@
 package com.leochung0728.quartz.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerMetaData;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,8 +37,8 @@ public class JobController {
 		return metaData;
 	}
 
-	@RequestMapping(value = "/addJob", method = { RequestMethod.GET, RequestMethod.POST })
-	public Object addJob(SchedulerJobInfo job) {
+	@RequestMapping(value = "/addJob", method = { RequestMethod.POST })
+	public Object addJob(@RequestBody SchedulerJobInfo job) {
 		log.info("params, job = {}", job);
 		Message message = Message.failure();
 		try {
@@ -49,8 +51,8 @@ public class JobController {
 		return message;
 	}
 
-	@RequestMapping(value = "/updateJob", method = { RequestMethod.GET, RequestMethod.POST })
-	public Object updateJob(SchedulerJobInfo job) {
+	@RequestMapping(value = "/updateJob", method = { RequestMethod.POST })
+	public Object updateJob(@RequestBody SchedulerJobInfo job) {
 		log.info("params, job = {}", job);
 		Message message = Message.failure();
 		try {
@@ -63,8 +65,8 @@ public class JobController {
 		return message;
 	}
 
-	@RequestMapping(value = "/runJob", method = { RequestMethod.GET, RequestMethod.POST })
-	public Object runJob(SchedulerJobInfo job) {
+	@RequestMapping(value = "/runJob", method = { RequestMethod.POST })
+	public Object runJob(@RequestBody SchedulerJobInfo job) {
 		log.info("params, job = {}", job);
 		Message message = Message.failure();
 		try {
@@ -77,8 +79,8 @@ public class JobController {
 		return message;
 	}
 
-	@RequestMapping(value = "/pauseJob", method = { RequestMethod.GET, RequestMethod.POST })
-	public Object pauseJob(SchedulerJobInfo job) {
+	@RequestMapping(value = "/pauseJob", method = { RequestMethod.POST })
+	public Object pauseJob(@RequestBody SchedulerJobInfo job) {
 		log.info("params, job = {}", job);
 		Message message = Message.failure();
 		try {
@@ -92,7 +94,7 @@ public class JobController {
 	}
 
 	@RequestMapping(value = "/resumeJob", method = { RequestMethod.GET, RequestMethod.POST })
-	public Object resumeJob(SchedulerJobInfo job) {
+	public Object resumeJob(@RequestBody SchedulerJobInfo job) {
 		log.info("params, job = {}", job);
 		Message message = Message.failure();
 		try {
@@ -105,8 +107,8 @@ public class JobController {
 		return message;
 	}
 
-	@RequestMapping(value = "/deleteJob", method = { RequestMethod.GET, RequestMethod.POST })
-	public Object deleteJob(SchedulerJobInfo job) {
+	@RequestMapping(value = "/deleteJob", method = { RequestMethod.POST })
+	public Object deleteJob(@RequestBody SchedulerJobInfo job) {
 		log.info("params, job = {}", job);
 		Message message = Message.failure();
 		try {

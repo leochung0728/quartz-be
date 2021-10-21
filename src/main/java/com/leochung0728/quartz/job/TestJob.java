@@ -1,6 +1,7 @@
 package com.leochung0728.quartz.job;
 
 import java.util.Date;
+import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobDataMap;
@@ -25,9 +26,18 @@ public class TestJob extends AbstractStatefulJob {
 		String p2 = StringUtils.defaultString(dataMap.getString(JOB_DETAIL_PROPERTIES[1]), "");
 		String p3 = StringUtils.defaultString(dataMap.getString(JOB_DETAIL_PROPERTIES[2]), "");
 		String p4 = StringUtils.defaultString(dataMap.getString(JOB_DETAIL_PROPERTIES[3]), "");
+		
+		IntStream.range(0, 10).forEach(i -> {
+			log.info("Counting - {}", i);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				log.error(e.getMessage(), e);
+			}
+		});
 
 		log.info("p1 = {}, p2 = {}, p3 = {}, p4 = {}", p1, p2, p3, p4);
-		log.info("Job End ! {}", new Date().toString());
+		log.info("TestJob End ! {}", new Date().toString());
 
 	}
 

@@ -85,7 +85,7 @@ public class SchedulerJobService {
 				job.setNextFireTime(trigger.getNextFireTime());
 				job.setFireTimes(fireTimes);
 				
-				log.info("add job: {}", job);
+				log.info("job: {}", job);
 				jobs.add(job);
 			}
 		}
@@ -136,7 +136,7 @@ public class SchedulerJobService {
 	}
 
 	public Date addJob(SchedulerJobInfo jobInfo) throws Exception {
-		log.info("Trigger job: {}", jobInfo);
+		log.info("addJob job: {}", jobInfo);
 		
 		RegisteredClass registeredClass = AbstractStatefulJob.getRegisteredClass(jobInfo.getJobGroup());
 		Assert.notNull(registeredClass, String.format("Job is not exist [%s]", jobInfo.getJobGroup()));
@@ -161,11 +161,12 @@ public class SchedulerJobService {
 				.withIdentity(jobInfo.getJobName(), jobInfo.getJobGroup())
 				.withDescription(jobInfo.getDesc())
 				.setJobData(jobInfo.getDataMap())
+				.storeDurably(true)
 				.build();
 		
 		CronTrigger trigger = scheduleCreator.createCronTrigger(jobInfo.getJobName(), jobInfo.getJobGroup(),
 				new Date(), jobInfo.getCronExpression(), CronTrigger.MISFIRE_INSTRUCTION_FIRE_ONCE_NOW);
-		scheduler.rescheduleJob(TriggerKey.triggerKey(null), trigger);
+		scheduler.rescheduleJob(TriggerKey.triggerKey(jobInfo.getJobName(), jobInfo.getJobGroup()), trigger);
 		scheduler.addJob(jobDetail, true);
 	}
 
