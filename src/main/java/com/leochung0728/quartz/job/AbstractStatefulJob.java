@@ -6,15 +6,17 @@ import java.util.Map;
 import org.quartz.DisallowConcurrentExecution;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import com.leochung0728.quartz.parser.web.medicalExpensesRefundCap.WebMedicalExpensesRefundCapJob;
+
 @DisallowConcurrentExecution
 public abstract class AbstractStatefulJob extends QuartzJobBean {
 	public static final String[] JOB_DETAIL_PROPERTIES = { "p1", "p2", "p3", "p4" };
 	static Map<String, RegisteredClass> classNameMap = new HashMap<>();
 
 	public static enum RegisteredClass {
-		測試作業(TestJob.class);
-//		醫療費用核退上限(WebMedicalExpensesRefundCapJob.class),
-//		醫事查詢系統(WebMASearchJob.class);
+		測試作業(TestJob.class),
+		醫療費用核退上限(WebMedicalExpensesRefundCapJob.class),
+		醫事查詢系統(WebMASearchJob.class);
 
 		private Class<? extends AbstractStatefulJob> clazz;
 
