@@ -64,7 +64,7 @@ public class JobController {
 		return message;
 	}
 
-	@RequestMapping(value = "/runJob", method = { RequestMethod.POST })
+	@RequestMapping(value = "/triggerJob", method = { RequestMethod.POST })
 	public Object runJob(@RequestBody SchedulerJobInfo job) {
 		log.info("params, job = {}", job);
 		Message message = Message.failure();
@@ -73,7 +73,7 @@ public class JobController {
 			message = Message.success();
 		} catch (Exception e) {
 			message.setMsg(e.getMessage());
-			log.error("runJob ex:", e);
+			log.error("triggerJob ex:", e);
 		}
 		return message;
 	}

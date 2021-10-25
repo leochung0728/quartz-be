@@ -19,6 +19,7 @@ public class SchedulerJobInfo {
 	private String jobGroup;
 	@ToString.Include
 	private String jobName;
+	private String name;
 	private String cronExpression;
 	private String jobStatus;
 	private String desc;

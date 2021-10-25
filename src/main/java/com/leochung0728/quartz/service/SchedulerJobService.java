@@ -12,7 +12,6 @@ import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerMetaData;
-import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.Trigger.TriggerState;
 import org.quartz.TriggerKey;
@@ -21,19 +20,15 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.spi.OperableTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import com.leochung0728.quartz.component.JobScheduleCreator;
 import com.leochung0728.quartz.entity.SchedulerJobInfo;
 import com.leochung0728.quartz.job.AbstractStatefulJob;
 import com.leochung0728.quartz.job.AbstractStatefulJob.RegisteredClass;
-import com.leochung0728.quartz.job.SimpleCronJob;
-import com.leochung0728.quartz.job.TestJob;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,9 +69,13 @@ public class SchedulerJobService {
     				cronExpression = cronTrigger.getCronExpression();
     			}
 				
+				RegisteredClass registeredClass = AbstractStatefulJob.getRegisteredClass(jobKey.getGroup());
+				if (registeredClass == null) continue;
+				
 				SchedulerJobInfo job = new SchedulerJobInfo();
 				job.setJobGroup(jobKey.getGroup());
 				job.setJobName(jobKey.getName());
+				job.setName(registeredClass.name());
 				job.setCronExpression(cronExpression);
 				job.setJobStatus(state.name());
 				job.setDesc(jobDetail.getDescription());
