@@ -19,8 +19,6 @@ import org.quartz.TriggerUtils;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.spi.OperableTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -39,12 +37,6 @@ public class SchedulerJobService {
 
 	@Autowired
 	private Scheduler scheduler;
-
-	@Autowired
-	private SchedulerFactoryBean schedulerFactoryBean;
-
-	@Autowired
-	private ApplicationContext context;
 
 	@Autowired
 	private JobScheduleCreator scheduleCreator;

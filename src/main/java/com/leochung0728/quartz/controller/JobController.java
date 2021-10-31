@@ -1,6 +1,9 @@
 package com.leochung0728.quartz.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerMetaData;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.leochung0728.quartz.entity.Message;
 import com.leochung0728.quartz.entity.SchedulerJobInfo;
+import com.leochung0728.quartz.job.AbstractStatefulJob.RegisteredClass;
 import com.leochung0728.quartz.service.SchedulerJobService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +32,18 @@ public class JobController {
 	public Object getAllJobs() throws SchedulerException {
 		List<SchedulerJobInfo> jobList = scheduleJobService.getAllJobList();
 		return jobList;
+	}
+	
+	@RequestMapping("/getRegisteredJobs")
+	public Object getRegisteredJobs() throws SchedulerException {
+		List<Map<String, String>> options = new ArrayList<>();
+		for (RegisteredClass registeredjob : RegisteredClass.values()) {
+			Map<String, String> option = new HashMap<>();
+			option.put("label", registeredjob.name());
+			option.put("value", registeredjob.getClazz().getName());
+			options.add(option);
+		}
+		return options;
 	}
 
 	@RequestMapping("/metaData")
