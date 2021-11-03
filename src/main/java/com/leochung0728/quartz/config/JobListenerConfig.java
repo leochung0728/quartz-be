@@ -14,10 +14,13 @@ public class JobListenerConfig {
 
 	@Autowired
 	private Scheduler scheduler;
+	
+	@Autowired
+	private JobRecordListener jobRecordListener;
 
 	@PostConstruct
 	public void addListeners() throws SchedulerException {
-		scheduler.getListenerManager().addJobListener(new JobRecordListener());
+		scheduler.getListenerManager().addJobListener(jobRecordListener);
 	}
 
 }
