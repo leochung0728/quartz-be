@@ -1,6 +1,7 @@
 package com.leochung0728.quartz.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -19,14 +20,18 @@ import org.quartz.TriggerUtils;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.spi.OperableTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import com.leochung0728.quartz.component.JobScheduleCreator;
+import com.leochung0728.quartz.dao.JobHistDao;
 import com.leochung0728.quartz.entity.SchedulerJobInfo;
 import com.leochung0728.quartz.job.AbstractStatefulJob;
 import com.leochung0728.quartz.job.AbstractStatefulJob.RegisteredClass;
+import com.leochung0728.quartz.table.JobHist;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,6 +42,9 @@ public class SchedulerJobService {
 
 	@Autowired
 	private Scheduler scheduler;
+	
+	@Autowired
+	JobHistDao jobHistDao;
 
 	@Autowired
 	private JobScheduleCreator scheduleCreator;
@@ -159,6 +167,10 @@ public class SchedulerJobService {
 				new Date(), jobInfo.getCronExpression(), CronTrigger.MISFIRE_INSTRUCTION_FIRE_ONCE_NOW);
 		scheduler.rescheduleJob(TriggerKey.triggerKey(jobInfo.getJobName(), jobInfo.getJobGroup()), trigger);
 		scheduler.addJob(jobDetail, true);
+	}
+	
+	public List<JobHist> getJobHist(SchedulerJobInfo jobInfo) throws Exception {
+		return jobHistDao.findByjobGroupAndJobName(jobInfo.getJobGroup(), jobInfo.getJobName(), Sort.by(Direction.DESC, "startTime"));
 	}
 
 }

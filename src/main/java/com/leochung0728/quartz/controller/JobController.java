@@ -16,6 +16,7 @@ import com.leochung0728.quartz.entity.Message;
 import com.leochung0728.quartz.entity.SchedulerJobInfo;
 import com.leochung0728.quartz.job.AbstractStatefulJob.RegisteredClass;
 import com.leochung0728.quartz.service.SchedulerJobService;
+import com.leochung0728.quartz.table.JobHist;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -129,6 +130,22 @@ public class JobController {
 		try {
 			scheduleJobService.deleteJob(job);
 			message = Message.success();
+		} catch (Exception e) {
+			message.setMsg(e.getMessage());
+			log.error("deleteJob ex:", e);
+		}
+		return message;
+	}
+	
+	@RequestMapping(value = "/getJobHist", method = { RequestMethod.POST })
+	public Object getJobHist(@RequestBody SchedulerJobInfo job) {
+		log.info("params, job = {}", job);
+		Message message = Message.failure();
+		try {
+			List<JobHist> hists = scheduleJobService.getJobHist(job);
+			
+			message = Message.success();
+			message.setData(hists);
 		} catch (Exception e) {
 			message.setMsg(e.getMessage());
 			log.error("deleteJob ex:", e);
