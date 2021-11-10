@@ -6,8 +6,6 @@ import java.util.Map;
 import org.quartz.DisallowConcurrentExecution;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import com.leochung0728.quartz.parser.web.medicalExpensesRefundCap.WebMedicalExpensesRefundCapJob;
-
 @DisallowConcurrentExecution
 public abstract class AbstractStatefulJob extends QuartzJobBean {
 	public static final String[] JOB_DETAIL_PROPERTIES = { "p1", "p2", "p3", "p4" };

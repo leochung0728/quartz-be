@@ -1,4 +1,4 @@
-package com.leochung0728.quartz.parser.web.medicalExpensesRefundCap;
+package com.leochung0728.quartz.job;
 
 import java.util.Date;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.leochung0728.quartz.job.AbstractStatefulJob;
+import com.leochung0728.quartz.parser.web.medicalExpensesRefundCap.WebParser;
 
 public class WebMedicalExpensesRefundCapJob extends AbstractStatefulJob {
 	private static final Logger LOG = LoggerFactory.getLogger(WebMedicalExpensesRefundCapJob.class);
