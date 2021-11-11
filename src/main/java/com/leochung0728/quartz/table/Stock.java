@@ -2,6 +2,7 @@ package com.leochung0728.quartz.table;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -39,15 +40,15 @@ public class Stock {
 	@Column()
 	private String stockName;
 	// 市場別
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
 	@JoinColumn()
 	private StockMarketType marketType;
 	// 有價證券別
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
 	@JoinColumn()
 	private StockIssueType issueType;
 	// 產業別
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
 	@JoinColumn()
 	private StockIndustryType industryType;
 	// 發行日
@@ -63,5 +64,17 @@ public class Stock {
 	@LastModifiedDate
 	@Column(nullable = false)
 	private Date modifyDate;
+	
+	public Stock(String isinCode, String stockCode, String stockName, StockMarketType marketType,
+			StockIssueType issueType, StockIndustryType industryType, Date releaseDate, String cfiCode) {
+		this.isinCode = isinCode;
+		this.stockCode = stockCode;
+		this.stockName = stockName;
+		this.marketType = marketType;
+		this.issueType = issueType;
+		this.industryType = industryType;
+		this.releaseDate = releaseDate;
+		this.cfiCode = cfiCode;
+	}
 
 }

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.leochung0728.quartz.table.StockMarketType;
 
 @Repository("StockMarketTypeDao")
-public interface StockMarketTypeDao extends JpaRepository<StockMarketType, Long> {
+public interface StockMarketTypeDao extends JpaRepository<StockMarketType, String> {
 
 }

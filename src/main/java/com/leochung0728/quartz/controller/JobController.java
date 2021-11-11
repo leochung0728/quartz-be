@@ -40,7 +40,7 @@ public class JobController {
 		List<Map<String, String>> options = new ArrayList<>();
 		for (RegisteredClass registeredjob : RegisteredClass.values()) {
 			Map<String, String> option = new HashMap<>();
-			option.put("label", registeredjob.name());
+			option.put("label", registeredjob.getJobName());
 			option.put("value", registeredjob.getClazz().getName());
 			options.add(option);
 		}

@@ -8,8 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -33,10 +31,7 @@ import lombok.ToString;
 @EntityListeners(AuditingEntityListener.class)
 public class StockMarketType {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column()
-	private Long code;
-	@Column()
+	@Column(unique = true)
 	private String name;
 
 	@CreatedDate
@@ -48,5 +43,9 @@ public class StockMarketType {
 	
 	@OneToMany(mappedBy = "marketType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Stock> stocks;
+	
+	public StockMarketType(String name) {
+		this.name = name;
+	}
 
 }

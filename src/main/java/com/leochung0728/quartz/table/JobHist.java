@@ -32,7 +32,7 @@ import lombok.ToString;
 @EntityListeners(AuditingEntityListener.class)
 public class JobHist {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String jobGroup;
 	private String jobName;

@@ -4,18 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.leochung0728.quartz.dao.WebListEntryMASearchDao;
+import com.leochung0728.quartz.dao.StockDao;
 import com.leochung0728.quartz.parser.web.stockData.MarketType;
 import com.leochung0728.quartz.parser.web.stockData.WebParser;
-import com.leochung0728.quartz.table.WebListEntryMASearch;
+import com.leochung0728.quartz.table.Stock;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,8 +25,8 @@ public class StockDataJob extends AbstractStatefulJob {
 	@Autowired
 	WebParser webParser;
 	
-//	@Autowired
-//	WebListEntryMASearchDao webListEntryMASearchDao;
+	@Autowired
+	StockDao stockDao;
 	
 	@Override
 	public void executeInternal(JobExecutionContext context) {
@@ -52,42 +50,14 @@ public class StockDataJob extends AbstractStatefulJob {
 			webParser.search(3);
 			log.info("End search");
 			
-			Document doc = Jsoup.parse(webParser.getPageSource());
+			log.info("Start parse");
+			List<Stock> stocks = webParser.parsePageSource();
+			log.info("parse stokes size: {}", stocks.size());
+			log.info("End parse");
 			
-			
-//			List<WebListEntryMASearch> datas = parser.getListData();
-//			log.info("getListData size= {}", datas.size());
-//			webListEntryMASearchDao.saveAll(datas);
-//			
-//			while (parser.hasNextPage()) {
-//				Integer currentPage = parser.getCurrentPage();
-//				boolean isSucc = false;
-//				
-//				try {
-//					log.info("Start jumpToNextPage");
-//					isSucc = parser.jumpToNextPage();
-//					log.info("End jumpToNextPage");
-//				} catch (Exception e) {
-//					isLoginSucc = parser.search(10);
-//					if (!isLoginSucc) {
-//						throw new Exception("login failed!");
-//					}
-//					parser.jumpToPage(currentPage + 1);
-//				}
-//				
-//				log.info("jumpToNextPage Succ: {}", isSucc);
-//				log.info("page info => [{} / {}]", parser.getTotalPage(), parser.getCurrentPage());
-//				if (isSucc) {
-//					long randomSecond = Math.round(Math.random() * 4 - 2);
-//					Thread.sleep((4 + randomSecond) * 1000);
-//					datas = parser.getListData();
-//					log.info("getListData size= {}", datas.size());
-//					webListEntryMASearchDao.saveAll(datas);
-//				} else {
-//					log.error("Error @{} {}.{}: {}", new Date(), trigger.getKey().getGroup(),
-//							trigger.getKey().getName(), "jumpToNextPage failed !");
-//				}
-//			}
+			log.info("Start save");
+			stockDao.saveAll(stocks);
+			log.info("End save");
 			
 		} catch (Exception e) {
 			log.error("Error : {}", e);

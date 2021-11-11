@@ -12,18 +12,25 @@ public abstract class AbstractStatefulJob extends QuartzJobBean {
 	static Map<String, RegisteredClass> classNameMap = new HashMap<>();
 
 	public static enum RegisteredClass {
-		測試作業(TestJob.class),
-		醫療費用核退上限(WebMedicalExpensesRefundCapJob.class),
-		醫事查詢系統(WebMASearchJob.class);
+		測試作業(TestJob.class, "測試作業"),
+		醫療費用核退上限(WebMedicalExpensesRefundCapJob.class, "醫療費用核退上限"),
+		醫事查詢系統(WebMASearchJob.class, "醫事查詢系統"),
+		StockDataJob(StockDataJob.class, "Stock Data Job");
 
 		private Class<? extends AbstractStatefulJob> clazz;
+		private String jobName;
 
-		private RegisteredClass(Class<? extends AbstractStatefulJob> clazz) {
+		private RegisteredClass(Class<? extends AbstractStatefulJob> clazz, String jobName) {
 			this.clazz = clazz;
+			this.jobName = jobName;
 		}
 
 		public Class<? extends AbstractStatefulJob> getClazz() {
 			return clazz;
+		}
+		
+		public String getJobName() {
+			return jobName;
 		}
 	}
 

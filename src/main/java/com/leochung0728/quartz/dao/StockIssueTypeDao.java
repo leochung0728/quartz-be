@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.leochung0728.quartz.table.StockIssueType;
 
 @Repository("StockIssueTypeDao")
-public interface StockIssueTypeDao extends JpaRepository<StockIssueType, Long> {
+public interface StockIssueTypeDao extends JpaRepository<StockIssueType, String> {
 
 }

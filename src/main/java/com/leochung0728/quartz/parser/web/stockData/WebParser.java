@@ -1,9 +1,10 @@
 package com.leochung0728.quartz.parser.web.stockData;
 
 import java.text.ParseException;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +24,11 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.util.UriBuilder;
+
+import com.leochung0728.quartz.table.Stock;
+import com.leochung0728.quartz.table.StockIndustryType;
+import com.leochung0728.quartz.table.StockIssueType;
+import com.leochung0728.quartz.table.StockMarketType;
 
 @Slf4j
 @Getter
@@ -82,32 +88,41 @@ public class WebParser {
 		return isSucc;
 	}
 	
-	public void parsePageSource() {
+	public List<Stock> parsePageSource() {
+		List<Stock> stocks = new ArrayList<>();
+		
 		Document doc = Jsoup.parse(this.pageSource);
 		
 		Element tbody = doc.selectFirst("table tbody");
 		Elements trs = tbody.select("tr");
 		
-		if (trs.size() < 2) return;
+		if (trs.size() < 2) return stocks;
 		trs.remove(0);
 		
 		for (Element tr : trs) {
 			Elements tds = tr.select("td");
-			String isinCode = StringUtils.trim(tds.get(1).text());
-			String stockCode = StringUtils.trim(tds.get(2).text());
-			String stockName = StringUtils.trim(tds.get(3).text());
-			String marketTypeName = StringUtils.trim(tds.get(4).text());
-			String issueTypeName = StringUtils.trim(tds.get(5).text());
-			String industryTypeName = StringUtils.trim(tds.get(6).text());
+			String isinCode = StringUtils.trimToNull(tds.get(1).text());
+			String stockCode = StringUtils.trimToNull(tds.get(2).text());
+			String stockName = StringUtils.trimToNull(tds.get(3).text());
+			String marketTypeName = StringUtils.trimToNull(tds.get(4).text());
+			String issueTypeName = StringUtils.trimToNull(tds.get(5).text());
+			String industryTypeName = StringUtils.trimToNull(tds.get(6).text());
 			Date releaseDate = null;
 			try {
 				releaseDate = DateUtils.parseDateStrictly(StringUtils.trim(tds.get(7).text()), new String[] { "yyyy/MM/dd" });
 			} catch (ParseException e) {
 				log.error(String.format("parse date error, isinCode = %s", isinCode), e);
 			}
-			String cfiCode = StringUtils.trim(tds.get(6).text());
+			String cfiCode = StringUtils.trimToNull(tds.get(6).text());
+			
+			StockMarketType marketType = marketTypeName != null ? new StockMarketType(marketTypeName) : null;
+			StockIssueType issueType = issueTypeName != null ? new StockIssueType(issueTypeName) : null;
+			StockIndustryType industryType = industryTypeName != null ? new StockIndustryType(industryTypeName) : null;
+			Stock stock = new Stock(isinCode, stockCode, stockName, marketType, issueType, industryType, releaseDate, cfiCode);
+			
+			stocks.add(stock);
 		}
-		
+		return stocks;
 	}
 
 }

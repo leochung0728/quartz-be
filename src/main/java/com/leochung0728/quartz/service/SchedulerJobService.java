@@ -1,7 +1,6 @@
 package com.leochung0728.quartz.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -75,7 +74,7 @@ public class SchedulerJobService {
 				SchedulerJobInfo job = new SchedulerJobInfo();
 				job.setJobGroup(jobKey.getGroup());
 				job.setJobName(jobKey.getName());
-				job.setName(registeredClass.name());
+				job.setName(registeredClass.getJobName());
 				job.setCronExpression(cronExpression);
 				job.setJobStatus(state.name());
 				job.setDesc(jobDetail.getDescription());
