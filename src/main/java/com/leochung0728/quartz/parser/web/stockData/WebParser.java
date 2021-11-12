@@ -68,7 +68,7 @@ public class WebParser {
 		setSearchUrl();
 		webDriver.get(searchUrl);
 		this.pageSource = webDriver.getPageSource();
-		webDriver.close();
+//		webDriver.close();
 	}
 
 	public boolean search(Integer maxTryTimes) {

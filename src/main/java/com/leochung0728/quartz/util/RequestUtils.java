@@ -16,7 +16,8 @@ public class RequestUtils {
 			.header("User-Agent", USER_AGENT)
 			.header("Accept-Language", "en-US,en;q=0.8,zh-TW;q=0.6,zh;q=0.4")
 			.header("Progma", "no-cache")
-			.ignoreContentType(true);
+			.ignoreContentType(true)
+			.ignoreHttpErrors(true);
 		
 		if (referer != null) {
 			connection.referrer(referer);

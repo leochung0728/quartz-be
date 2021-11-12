@@ -1,6 +1,7 @@
 package com.leochung0728.quartz.table;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -40,15 +42,15 @@ public class Stock {
 	@Column()
 	private String stockName;
 	// 市場別
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, optional = true)
 	@JoinColumn()
 	private StockMarketType marketType;
 	// 有價證券別
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, optional = true)
 	@JoinColumn()
 	private StockIssueType issueType;
 	// 產業別
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, optional = true)
 	@JoinColumn()
 	private StockIndustryType industryType;
 	// 發行日
@@ -64,6 +66,9 @@ public class Stock {
 	@LastModifiedDate
 	@Column(nullable = false)
 	private Date modifyDate;
+	
+	@OneToMany(mappedBy = "isinCode", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Set<StockTransaction> stockTransactions;
 	
 	public Stock(String isinCode, String stockCode, String stockName, StockMarketType marketType,
 			StockIssueType issueType, StockIndustryType industryType, Date releaseDate, String cfiCode) {
