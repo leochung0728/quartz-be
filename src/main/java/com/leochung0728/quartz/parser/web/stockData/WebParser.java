@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.util.UriBuilder;
 
+import com.leochung0728.quartz.config.DriverManager;
 import com.leochung0728.quartz.table.Stock;
 import com.leochung0728.quartz.table.StockIndustryType;
 import com.leochung0728.quartz.table.StockIssueType;
@@ -32,10 +33,12 @@ import com.leochung0728.quartz.table.StockMarketType;
 
 @Slf4j
 @Getter
-@Component
+@Component("StockDataWebParser")
 @Scope("prototype")
 public class WebParser {
 	@Autowired
+	DriverManager driverManager;
+	
 	WebDriver webDriver;
 
 	static final String BASE_URL = "https://isin.twse.com.tw/isin/class_main.jsp?owncode=&stockname=&isincode={isinCode}&market={marketType}&issuetype=&industry_code=&Page=1&chklike=Y";
@@ -64,11 +67,22 @@ public class WebParser {
 		this.searchUrl = uriBuilder.build(paramMap).toString();
 	}
 
+	public void getWebDriver() {
+		if (this.webDriver == null) {
+			this.webDriver = driverManager.getDriver();
+		}
+	}
+	
+	public void closeWebDriver() {
+		if (this.webDriver != null) {
+			this.webDriver.close();
+		}
+	}
+	
 	public void search() {
 		setSearchUrl();
 		webDriver.get(searchUrl);
 		this.pageSource = webDriver.getPageSource();
-//		webDriver.close();
 	}
 
 	public boolean search(Integer maxTryTimes) {

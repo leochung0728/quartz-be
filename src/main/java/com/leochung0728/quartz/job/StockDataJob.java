@@ -23,7 +23,7 @@ public class StockDataJob extends AbstractStatefulJob {
 	
 	
 	@Autowired
-	WebParser webParser;
+	WebParser StockDataWebParser;
 	
 	@Autowired
 	StockDao stockDao;
@@ -44,14 +44,16 @@ public class StockDataJob extends AbstractStatefulJob {
 			MarketType marketType = MarketType.getByCode(marketTypeCode);
 			log.info("Input parameter [marketType= {}, isinCode= {}]", marketType, isinCode);
 			
-			webParser.setSearchParam(marketType, isinCode);
+			StockDataWebParser.setSearchParam(marketType, isinCode);
+			
+			StockDataWebParser.getWebDriver();
 			
 			log.info("Start search");
-			webParser.search(3);
+			StockDataWebParser.search(3);
 			log.info("End search");
 			
 			log.info("Start parse");
-			List<Stock> stocks = webParser.parsePageSource();
+			List<Stock> stocks = StockDataWebParser.parsePageSource();
 			log.info("parse stokes size: {}", stocks.size());
 			log.info("End parse");
 			
@@ -61,6 +63,8 @@ public class StockDataJob extends AbstractStatefulJob {
 			
 		} catch (Exception e) {
 			log.error("Error : {}", e);
+		}  finally {
+			StockDataWebParser.closeWebDriver();
 		}
 		log.info("End @{} {}.{}", SDF.format(new Date()), trigger.getKey().getGroup(), trigger.getKey().getName());
 	}

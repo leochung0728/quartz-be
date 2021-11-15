@@ -10,6 +10,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -21,6 +22,7 @@ public class DriverManager {
 	private String browser;
 
 	@Bean
+	@Scope("prototype")
 	public WebDriver getDriver() {
 		WebDriver driver;
 		switch (browser.toLowerCase()) {
@@ -40,7 +42,7 @@ public class DriverManager {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "selenium.browser", havingValue = "Chrome")
+	@ConditionalOnProperty(name = "selenium.browser", havingValue = "chrome")
 	public WebDriver getChromeDriver() {
 		WebDriverManager.chromedriver().setup();
 		ChromeOptions options = new ChromeOptions();
@@ -58,7 +60,7 @@ public class DriverManager {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "selenium.browser", havingValue = "Edge")
+	@ConditionalOnProperty(name = "selenium.browser", havingValue = "edge")
 	public WebDriver getEdgeDriver() {
 		WebDriverManager.firefoxdriver().setup();
 		return new FirefoxDriver();

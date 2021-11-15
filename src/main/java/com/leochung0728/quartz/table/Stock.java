@@ -59,6 +59,8 @@ public class Stock {
 	// CFI Code
 	@Column()
 	private String cfiCode;
+	@Column(nullable = false, columnDefinition = "number default 0")
+	private int errCount;
 
 	@CreatedDate
 	@Column(updatable = false, nullable = false)
