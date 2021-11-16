@@ -25,6 +25,7 @@ import lombok.Getter;
 
 import org.springframework.web.util.UriBuilder;
 
+import com.leochung0728.quartz.entity.Vo;
 import com.leochung0728.quartz.parser.web.stockData.MarketType;
 import com.leochung0728.quartz.table.Stock;
 import com.leochung0728.quartz.table.StockTransaction;
@@ -100,14 +101,15 @@ public class WebParser {
 		return isSucc;
 	}
 	
-	public List<StockTransaction> parseData() throws Exception {
+	public Vo<List<StockTransaction>> parseData() {
+		Vo<List<StockTransaction>> vo = Vo.failure();
 		List<StockTransaction> StockTransactions = new ArrayList<>();
 		
 		JSONObject jsonObj = new JSONObject(this.jsonStr);
 		boolean notHasError = jsonObj.getJSONObject("chart").isNull("error");
 		if (!notHasError) {
-			String errMsg = String.format("error is not null, json: %s", jsonObj.toString());
-			throw new Exception(errMsg);
+			vo.setMsg(jsonObj.getJSONObject("chart").getJSONObject("error").toString());
+			return vo;
 		}
 		
 		JSONObject result = jsonObj.getJSONObject("chart").getJSONArray("result").getJSONObject(0);
@@ -141,7 +143,7 @@ public class WebParser {
 			}
 			StockTransactions.add(new StockTransaction(this.stock.getIsinCode(), date, open, high, low, close, adjclose, volume));
 		}
-		return StockTransactions;
+		return Vo.success(StockTransactions, null);
 	}
 
 }

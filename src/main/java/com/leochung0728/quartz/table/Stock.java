@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -59,8 +60,15 @@ public class Stock {
 	// CFI Code
 	@Column()
 	private String cfiCode;
-	@Column(nullable = false, columnDefinition = "number default 0")
+	// 錯誤次數
+	@Column(nullable = false, columnDefinition = "int default 0")
 	private int errCount;
+	// 錯誤訊息
+	@Column()
+	private String errMsg;
+	
+	@Version
+	private long version;
 
 	@CreatedDate
 	@Column(updatable = false, nullable = false)

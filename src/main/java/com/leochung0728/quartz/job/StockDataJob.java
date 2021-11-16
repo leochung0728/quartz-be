@@ -10,9 +10,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.leochung0728.quartz.dao.StockDao;
 import com.leochung0728.quartz.parser.web.stockData.MarketType;
 import com.leochung0728.quartz.parser.web.stockData.WebParser;
+import com.leochung0728.quartz.service.StockService;
 import com.leochung0728.quartz.table.Stock;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class StockDataJob extends AbstractStatefulJob {
 	WebParser StockDataWebParser;
 	
 	@Autowired
-	StockDao stockDao;
+	StockService stockService;
 	
 	@Override
 	public void executeInternal(JobExecutionContext context) {
@@ -58,7 +58,7 @@ public class StockDataJob extends AbstractStatefulJob {
 			log.info("End parse");
 			
 			log.info("Start save");
-			stockDao.saveAll(stocks);
+			stockService.saveAll(stocks);
 			log.info("End save");
 			
 		} catch (Exception e) {

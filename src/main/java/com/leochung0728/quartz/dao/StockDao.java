@@ -11,5 +11,7 @@ import com.leochung0728.quartz.table.Stock;
 public interface StockDao extends JpaRepository<Stock, String> {
 
 	List<Stock> findByStockCode(String stockCode);
+	
+	List<Stock> findByErrCountLessThanEqual(int errCount);
 
 }

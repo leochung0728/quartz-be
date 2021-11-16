@@ -2,6 +2,7 @@ package com.leochung0728.quartz.job;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.quartz.JobDataMap;
@@ -10,6 +11,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.leochung0728.quartz.entity.Vo;
 import com.leochung0728.quartz.parser.web.stockTransactionData.WebParser;
 import com.leochung0728.quartz.service.StockService;
 import com.leochung0728.quartz.service.StockTransationService;
@@ -44,9 +46,12 @@ public class StockTransactionDataJob extends AbstractStatefulJob {
 			String endDateStr = dataMap.getString(JOB_DETAIL_PROPERTIES[1]);
 			
 			
-			List<Stock> stocks = stockService.findAll();
-			
-			for (Stock stock : stocks) {
+			List<Stock> stocks = stockService.findByErrCountLessThanEqual(5);
+			Stock stock;
+			for (int idx = 0; idx <= stocks.size(); idx++) {
+				stock = stocks.get(idx);
+				
+				log.info("[{}/{}]", idx + 1, stocks.size());
 				log.info("Start stock: {}", stock.getStockCode());
 				
 				StockTransactionWebParser.setSearchParam(stock, startDateStr, endDateStr);
@@ -56,13 +61,14 @@ public class StockTransactionDataJob extends AbstractStatefulJob {
 				log.info("End search");
 				
 				log.info("Start parse");
-				List<StockTransaction> stockTransactions;
-				try {
-					stockTransactions = StockTransactionWebParser.parseData();
-				} catch (Exception e) {
-					log.error("parseData error:", e);
+				Vo<List<StockTransaction>> vo = StockTransactionWebParser.parseData();
+				if (!vo.isSucc()) {
+					log.warn("parseData fail:", vo.getMsg());
+					stock.setErrMsg(vo.getMsg());
+					stockService.increaseErrCount(stock, 5);
 					continue;
 				}
+				List<StockTransaction> stockTransactions = vo.getData();
 				log.info("parse stokes size: {}", stockTransactions.size());
 				log.info("End parse");
 				
