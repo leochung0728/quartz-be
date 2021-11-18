@@ -48,7 +48,7 @@ public class StockTransactionDataJob extends AbstractStatefulJob {
 			
 			List<Stock> stocks = stockService.findByErrCountLessThanEqual(5);
 			Stock stock;
-			for (int idx = 0; idx <= stocks.size(); idx++) {
+			for (int idx = 0; idx < stocks.size(); idx++) {
 				stock = stocks.get(idx);
 				
 				log.info("[{}/{}]", idx + 1, stocks.size());
@@ -63,7 +63,7 @@ public class StockTransactionDataJob extends AbstractStatefulJob {
 				log.info("Start parse");
 				Vo<List<StockTransaction>> vo = StockTransactionWebParser.parseData();
 				if (!vo.isSucc()) {
-					log.warn("parseData fail:", vo.getMsg());
+					log.warn("parseData fail: {}", vo.getMsg());
 					stock.setErrMsg(vo.getMsg());
 					stockService.increaseErrCount(stock, 5);
 					continue;
