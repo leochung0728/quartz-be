@@ -43,15 +43,15 @@ public class Stock {
 	@Column()
 	private String stockName;
 	// 市場別
-	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
 	@JoinColumn()
 	private StockMarketType marketType;
 	// 有價證券別
-	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
 	@JoinColumn()
 	private StockIssueType issueType;
 	// 產業別
-	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
 	@JoinColumn()
 	private StockIndustryType industryType;
 	// 發行日
@@ -77,7 +77,7 @@ public class Stock {
 	@Column(nullable = false)
 	private Date modifyDate;
 	
-	@OneToMany(mappedBy = "isinCode", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "isinCode", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<StockTransaction> stockTransactions;
 	
 	public Stock(String isinCode, String stockCode, String stockName, StockMarketType marketType,

@@ -38,6 +38,10 @@ public class Vo<E> implements Serializable {
 		return new Vo<E>(true, null, msg);
 	}
 	
+	public static <E> Vo<E> success(E data) {
+		return new Vo<E>(true, data, null);
+	}
+	
 	public static <E> Vo<E> success(E data, String msg) {
 		return new Vo<E>(true, data, msg);
 	}
