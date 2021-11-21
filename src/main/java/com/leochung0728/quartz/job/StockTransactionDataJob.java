@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -45,12 +46,12 @@ public class StockTransactionDataJob extends AbstractStatefulJob {
 			String startDateStr = dataMap.getString(JOB_DETAIL_PROPERTIES[0]);
 			String endDateStr = dataMap.getString(JOB_DETAIL_PROPERTIES[1]);
 
-			List<Stock> stocks = stockService.findByErrCountLessThanEqual(0);
+			List<Stock> stocks = stockService.findByErrCountLessThanEqual(3);
 			List<Future<Vo<Stock>>> futures = new ArrayList<>();
 			ExecutorService executorService = new ThreadPoolExecutor(20, 20, 0L, TimeUnit.MILLISECONDS,
-					new LinkedBlockingQueue<Runnable>());
+					new LinkedBlockingQueue<>());
 
-			ExecutorCompletionService<Vo<Stock>> completionService = new ExecutorCompletionService(executorService);
+			ExecutorCompletionService<Vo<Stock>> completionService = new ExecutorCompletionService<>(executorService);
 
 			for (Stock stock : stocks) {
 				futures.add(completionService.submit(new Worker(stock, startDateStr, endDateStr)));
@@ -63,6 +64,10 @@ public class StockTransactionDataJob extends AbstractStatefulJob {
 				Vo<Stock> vo = completionService.take().get();
 				log.info("[{}/{}] stock[{}] complete {}", count, futures.size(), vo.getData().getStockCode(), vo.getMsg());
 				if (vo.isSucc() && vo.getData() != null) {
+					if (CollectionUtils.isEmpty(vo.getData().getStockTransactions())) {
+						continue;
+					}
+					stockService.resetErrCount(vo.getData(), 5);
 					log.info("[{}]Start save, size = {}", vo.getData().getStockCode(), vo.getData().getStockTransactions().size());
 					stockTransationService.saveAll(new ArrayList<>(vo.getData().getStockTransactions()));
 					log.info("[{}]End save", vo.getData().getStockCode());
@@ -71,7 +76,7 @@ public class StockTransactionDataJob extends AbstractStatefulJob {
 				}
 			}
 		} catch (Exception e) {
-			log.error("Error : {}", e);
+			log.error("Error : ", e);
 		}
 		log.info("End @{} {}.{}", SDF.format(new Date()), trigger.getKey().getGroup(), trigger.getKey().getName());
 	}
@@ -88,10 +93,10 @@ public class StockTransactionDataJob extends AbstractStatefulJob {
 		}
 
 		@Override
-		public Vo<Stock> call() throws InterruptedException {
+		public Vo<Stock> call() {
 			log.info("Start stock: {}", stock.getStockCode());
 			WebParser StockTransactionWebParser = (WebParser) beanFactory.getBean("StockTransactionWebParser");
-			Set<StockTransaction> stockTransactions = new HashSet<StockTransaction>();
+			Set<StockTransaction> stockTransactions = new HashSet<>();
 			stock.setStockTransactions(stockTransactions);
 			try {
 				StockTransactionWebParser.setSearchParam(stock, startDateStr, endDateStr);
@@ -102,13 +107,14 @@ public class StockTransactionDataJob extends AbstractStatefulJob {
 				Vo<List<StockTransaction>> vo = StockTransactionWebParser.parseData();
 				if (!vo.isSucc()) {
 					log.warn("[{}] parseData fail: {}", stock.getStockCode(), vo.getMsg());
+					stock.setErrMsg(vo.getMsg());
 					return Vo.failure(stock, vo.getMsg());
 				}
 				stockTransactions.addAll(vo.getData());
 				log.info("[{}] parse stokes size: {}", stock.getStockCode(), stockTransactions.size());
 				log.info("[{}] End parse", stock.getStockCode());
 			}catch (Exception e) {
-				log.error("Error : {}", e);
+				log.error("Error : ", e);
 				return Vo.failure(stock, e.getMessage());
 			}
 			log.info("End stock: {}", stock.getStockCode());

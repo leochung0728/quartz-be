@@ -76,6 +76,27 @@ public class StockService {
 		}
 		return result;
 	}
+
+	@Transactional
+	public Stock resetErrCount(Stock stock, int maxRetry) {
+		Stock result = null;
+		boolean succ = false;
+		int retry = 1;
+		while (!succ) {
+			try {
+				Stock entity = stockDao.findById(stock.getIsinCode()).orElseThrow(EntityNotFoundException::new);
+				entity.setErrCount(0);
+				result = stockDao.save(entity);
+				succ = true;
+			} catch (OptimisticLockingFailureException e) {
+				retry += 1;
+				if (retry > maxRetry) {
+					throw e;
+				}
+			}
+		}
+		return result;
+	}
 	
 	@Transactional
 	public List<Stock> saveAll(List<Stock> stocks) {
