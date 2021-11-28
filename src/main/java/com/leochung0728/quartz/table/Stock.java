@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.NaturalId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -37,6 +38,7 @@ public class Stock {
 	@Column()
 	private String isinCode;
 	// 有價證券代號
+	@NaturalId
 	@Column()
 	private String stockCode;
 	// 有價證券名稱
@@ -79,6 +81,9 @@ public class Stock {
 	
 	@OneToMany(mappedBy = "isinCode", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<StockTransaction> stockTransactions;
+
+	@OneToMany(mappedBy = "stockCode", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<StockCompanyIncome> stockCompanyIncome;
 	
 	public Stock(String isinCode, String stockCode, String stockName, StockMarketType marketType,
 			StockIssueType issueType, StockIndustryType industryType, Date releaseDate, String cfiCode) {

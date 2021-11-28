@@ -15,8 +15,9 @@ public abstract class AbstractStatefulJob extends QuartzJobBean {
 		測試作業(TestJob.class, "測試作業"),
 		醫療費用核退上限(WebMedicalExpensesRefundCapJob.class, "醫療費用核退上限"),
 		醫事查詢系統(WebMASearchJob.class, "醫事查詢系統"),
-		StockDataJob(StockDataJob.class, "Stock Data Job"),
-		StockTransactionDataJob(StockTransactionDataJob.class, "Stock Transaction Data Job");
+		StockDataJob(StockDataJob.class, "股市資料爬蟲"),
+		StockTransactionDataJob(StockTransactionDataJob.class, "股市交易資料爬蟲"),
+		StockCompanyIncomeDataJob(StockCompanyIncomeDataJob.class, "股市公司受益爬蟲");
 
 		private Class<? extends AbstractStatefulJob> clazz;
 		private String jobName;

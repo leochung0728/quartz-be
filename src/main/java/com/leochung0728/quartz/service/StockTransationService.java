@@ -9,9 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.leochung0728.quartz.dao.StockTransationDao;
 import com.leochung0728.quartz.table.StockTransaction;
 
-//import lombok.extern.slf4j.Slf4j;
-
-//@Slf4j
 @Transactional(readOnly = true)
 @Service
 public class StockTransationService {

@@ -28,7 +28,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @Entity
-@IdClass(CompositeKeys.class)
+@IdClass(StockTransaction.CompositeKeys.class)
 @Table(name = "stock_transaction")
 @EntityListeners(AuditingEntityListener.class)
 public class StockTransaction {
@@ -51,20 +51,20 @@ public class StockTransaction {
 	private Double adjColse;
 	// 成交量
 	private Long volume;
-	
+
 	@CreatedDate
 	@Column(updatable = false, nullable = false)
 	private Date createDate;
 	@LastModifiedDate
 	@Column(nullable = false)
 	private Date modifyDate;
-	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = false)
+
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, optional = false)
 	@JoinColumn(name = "isin_code", insertable = false, updatable = false)
 	private Stock stock;
 
 	public StockTransaction(String isinCode, Date date, Double open, Double high, Double low, Double close,
-			Double adjColse, Long volume) {
+							Double adjColse, Long volume) {
 		this.isinCode = isinCode;
 		this.date = date;
 		this.open = open;
@@ -74,19 +74,19 @@ public class StockTransaction {
 		this.adjColse = adjColse;
 	}
 
-}
+	@ToString
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	class CompositeKeys implements Serializable {
+		private static final long serialVersionUID = -6519749215443877589L;
+		private String isinCode;
+		private Date date;
 
-@ToString
-@Getter
-@Setter
-@NoArgsConstructor
-class CompositeKeys implements Serializable {
-	private static final long serialVersionUID = -6519749215443877589L;
-	private String isinCode;
-    private Date date;
+		public CompositeKeys(String isinCode, Date date) {
+			this.isinCode = isinCode;
+			this.date = date;
+		}
+	}
 
-    public CompositeKeys(String isinCode, Date date) {
-        this.isinCode = isinCode;
-        this.date = date;
-    }
 }
