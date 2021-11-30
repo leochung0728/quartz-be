@@ -82,9 +82,6 @@ public class Stock {
 	@OneToMany(mappedBy = "isinCode", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<StockTransaction> stockTransactions;
 
-	@OneToMany(mappedBy = "stockCode", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private Set<StockCompanyIncome> stockCompanyIncome;
-	
 	public Stock(String isinCode, String stockCode, String stockName, StockMarketType marketType,
 			StockIssueType issueType, StockIndustryType industryType, Date releaseDate, String cfiCode) {
 		this.isinCode = isinCode;

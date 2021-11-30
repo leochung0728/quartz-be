@@ -58,10 +58,6 @@ public class StockCompanyIncome {
 	@Column(nullable = false)
 	private Date modifyDate;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, optional = false)
-	@JoinColumn(name = "stock_code", referencedColumnName = "stockCode", insertable = false, updatable = false)
-	private Stock stock;
-
 	public StockCompanyIncome(String stockCode, int year, int month, Double income, Double lastMonthIncome,
 							  Double lastYearIncome, Double lastMonthIncreaseRatio, Double lastYearIncreaseRatio, Double cumulativeIncome,
 							  Double lastYearCumulativeIncome, Double lastYearCumulativeIncreaseRatio, String remark) {
@@ -83,7 +79,7 @@ public class StockCompanyIncome {
 	@Getter
 	@Setter
 	@NoArgsConstructor
-	public class CompositeKeys implements Serializable {
+	public static class CompositeKeys implements Serializable {
 		private String stockCode;
 		private int year;
 		private int month;

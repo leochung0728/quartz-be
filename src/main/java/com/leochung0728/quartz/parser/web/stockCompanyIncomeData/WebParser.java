@@ -5,9 +5,11 @@ import com.leochung0728.quartz.util.RequestUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Connection.Method;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -125,16 +127,27 @@ public class WebParser {
 					if (tds.size() < 10) { // 至少10行
 						continue;
 					}
-					String stockCode = StringUtils.trim(tds.get(0).text());
-//					String companyName = StringUtils.trim(tds.get(1).text());
-					Double income = new DecimalFormat().parse(StringUtils.trim(tds.get(2).text())).doubleValue();
-					Double lastMonthIncome = new DecimalFormat().parse(StringUtils.trim(tds.get(3).text())).doubleValue();
-					Double lastYearIncome = new DecimalFormat().parse(StringUtils.trim(tds.get(4).text())).doubleValue();
-					Double lastMonthIncreaseRatio = new DecimalFormat().parse(StringUtils.trim(tds.get(5).text())).doubleValue();
-					Double lastYearIncreaseRatio = new DecimalFormat().parse(StringUtils.trim(tds.get(6).text())).doubleValue();
-					Double cumulativeIncome = new DecimalFormat().parse(StringUtils.trim(tds.get(7).text())).doubleValue();
-					Double lastYearCumulativeIncome = new DecimalFormat().parse(StringUtils.trim(tds.get(8).text())).doubleValue();
-					Double lastYearCumulativeIncreaseRatio = new DecimalFormat().parse(StringUtils.trim(tds.get(9).text())).doubleValue();
+					String cell1 = StringUtils.trim(StringEscapeUtils.unescapeHtml4(tds.get(0).text()));
+//					String cell2 = StringUtils.trim(StringEscapeUtils.unescapeHtml4(tds.get(1).text()));
+					String cell3 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(2).text()));
+					String cell4 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(3).text()));
+					String cell5 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(4).text()));
+					String cell6 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(5).text()));
+					String cell7 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(6).text()));
+					String cell8 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(7).text()));
+					String cell9 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(8).text()));
+					String cell10 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(9).text()));
+
+					String stockCode = cell1;
+//					String companyName = cell2;
+					Double income = cell3 != null ? new DecimalFormat().parse(cell3).doubleValue() : null;
+					Double lastMonthIncome = cell4 != null ? new DecimalFormat().parse(cell4).doubleValue() : null;
+					Double lastYearIncome = cell5 != null ? new DecimalFormat().parse(cell5).doubleValue() : null;
+					Double lastMonthIncreaseRatio = cell6 != null ? new DecimalFormat().parse(cell6).doubleValue() : null;
+					Double lastYearIncreaseRatio = cell7 != null ? new DecimalFormat().parse(cell7).doubleValue() : null;
+					Double cumulativeIncome = cell8 != null ? new DecimalFormat().parse(cell8).doubleValue() : null;
+					Double lastYearCumulativeIncome = cell9 != null ? new DecimalFormat().parse(cell9).doubleValue() : null;
+					Double lastYearCumulativeIncreaseRatio = cell10 != null ? new DecimalFormat().parse(cell10).doubleValue() : null;
 
 					String remark = null;
 					if (tds.size() >= 11 && !this.isV1()) {
@@ -143,7 +156,7 @@ public class WebParser {
 
 					StockCompanyIncome companyIncome = new StockCompanyIncome(stockCode, this.year, this.month, income, lastMonthIncome, lastYearIncome, lastMonthIncreaseRatio, lastYearIncreaseRatio, cumulativeIncome, lastYearCumulativeIncome, lastYearCumulativeIncreaseRatio, remark);
 					stockCompanyIncomes.add(companyIncome);
-				} catch (ParseException e) {
+				} catch (Exception e) {
 					log.error("Parse error: tr = " + tr, e);
 				}
 			}

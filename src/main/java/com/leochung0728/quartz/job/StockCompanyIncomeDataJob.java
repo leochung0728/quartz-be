@@ -106,7 +106,6 @@ public class StockCompanyIncomeDataJob extends AbstractStatefulJob {
 			}
 			log.info("End year: {}, month: {}", this.year, this.month);
 			return Vo.success(result);
-			
 		}
 	}
 }
