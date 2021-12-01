@@ -1,6 +1,6 @@
 package com.leochung0728.quartz.parser.web.stockCompanySeasonIncomeData;
 
-import com.leochung0728.quartz.table.StockCompanyIncome;
+import com.leochung0728.quartz.table.StockCompanySeasonIncome;
 import com.leochung0728.quartz.util.RequestUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -70,22 +70,11 @@ public class WebParser {
         int minguoYear = this.year - 1911;
 
         for (String type : new String[]{"sii", "otc"}) {
-            if (this.isV1) {
-                Map<String, Object> paramMap = new HashMap<>();
-                paramMap.put("type", type);
-                paramMap.put("minguoYear", minguoYear);
-                paramMap.put("month", month);
-                paramMaps.add(paramMap);
-            } else {
-                for (int region : new int[]{0, 1}) {
-                    Map<String, Object> paramMap = new HashMap<>();
-                    paramMap.put("type", type);
-                    paramMap.put("minguoYear", minguoYear);
-                    paramMap.put("month", month);
-                    paramMap.put("region", region);
-                    paramMaps.add(paramMap);
-                }
-            }
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("type", type);
+            paramMap.put("minguoYear", minguoYear);
+            paramMap.put("season", this.season);
+            paramMaps.add(paramMap);
         }
         for (Map<String, Object> paramMap : paramMaps) {
             searchUrls.add(uriBuilder.build(paramMap).toString());
@@ -113,59 +102,96 @@ public class WebParser {
         return document;
     }
 
-    public List<StockCompanyIncome> parseData(Document document) {
-        List<StockCompanyIncome> stockCompanyIncomes = new ArrayList<>();
+    public List<StockCompanySeasonIncome> parseData(Document document) {
+        return this.isV1 ? this.parseDataV1(document) : this.parseDataV2(document);
+    }
 
-        Elements tables = document.select(this.tableSelector);
+    private List<StockCompanySeasonIncome> parseDataV1(Document document) {
+        List<StockCompanySeasonIncome> result = new ArrayList<>();
+
+        Elements tables = document.select("table.hasBorder");
 
         for (Element table : tables) {
             Elements trs = table.select("tr");
-            if (trs.size() <= 3) { // 2列標題，1列合計
-                continue;
-            }
-            for (int idx = 2; idx < trs.size() - 1; idx++) {
-                Element tr = trs.get(idx);
-                try {
+
+            Integer epsIdx = null;
+            for (Element tr : trs) {
+                if (tr.hasClass("tblHead")) {
+                    epsIdx = null;
+                    Elements ths = tr.select("th");
+                    for (int idx = 0; idx < ths.size(); idx++) {
+                        Element th = ths.get(idx);
+                        if (th.text().contains("每股稅後盈餘")) {
+                            epsIdx = idx;
+                            break;
+                        }
+                    }
+                } else {
+                    if (epsIdx == null) break;
+
                     Elements tds = tr.select("td");
+                    if (tds.size() < epsIdx + 1) break;
 
-                    if (tds.size() < 10) { // 至少10行
-                        continue;
+                    try {
+                        String stockCode = StringUtils.trim(StringEscapeUtils.unescapeHtml4(tds.get(0).text()));
+                        String epsCell = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(epsIdx).text()));
+                        Double esp = epsCell != null ? new DecimalFormat().parse(epsCell).doubleValue() : null;
+
+                        StockCompanySeasonIncome entity = new StockCompanySeasonIncome(stockCode, this.year, this.season, esp);
+                        log.debug("entity: {}", entity);
+                        result.add(entity);
+
+                    } catch (Exception e) {
+                        log.error("Parse error: tr = " + tr, e);
                     }
-                    String cell1 = StringUtils.trim(StringEscapeUtils.unescapeHtml4(tds.get(0).text()));
-//					String cell2 = StringUtils.trim(StringEscapeUtils.unescapeHtml4(tds.get(1).text()));
-                    String cell3 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(2).text()));
-                    String cell4 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(3).text()));
-                    String cell5 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(4).text()));
-                    String cell6 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(5).text()));
-                    String cell7 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(6).text()));
-                    String cell8 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(7).text()));
-                    String cell9 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(8).text()));
-                    String cell10 = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(9).text()));
-
-                    String stockCode = cell1;
-//					String companyName = cell2;
-                    Double income = cell3 != null ? new DecimalFormat().parse(cell3).doubleValue() : null;
-                    Double lastMonthIncome = cell4 != null ? new DecimalFormat().parse(cell4).doubleValue() : null;
-                    Double lastYearIncome = cell5 != null ? new DecimalFormat().parse(cell5).doubleValue() : null;
-                    Double lastMonthIncreaseRatio = cell6 != null ? new DecimalFormat().parse(cell6).doubleValue() : null;
-                    Double lastYearIncreaseRatio = cell7 != null ? new DecimalFormat().parse(cell7).doubleValue() : null;
-                    Double cumulativeIncome = cell8 != null ? new DecimalFormat().parse(cell8).doubleValue() : null;
-                    Double lastYearCumulativeIncome = cell9 != null ? new DecimalFormat().parse(cell9).doubleValue() : null;
-                    Double lastYearCumulativeIncreaseRatio = cell10 != null ? new DecimalFormat().parse(cell10).doubleValue() : null;
-
-                    String remark = null;
-                    if (tds.size() >= 11 && !this.isV1()) {
-                        remark = StringUtils.trim(tds.get(10).text());
-                    }
-
-                    StockCompanyIncome companyIncome = new StockCompanyIncome(stockCode, this.year, this.month, income, lastMonthIncome, lastYearIncome, lastMonthIncreaseRatio, lastYearIncreaseRatio, cumulativeIncome, lastYearCumulativeIncome, lastYearCumulativeIncreaseRatio, remark);
-                    stockCompanyIncomes.add(companyIncome);
-                } catch (Exception e) {
-                    log.error("Parse error: tr = " + tr, e);
                 }
             }
         }
-        return stockCompanyIncomes;
+        return result;
+    }
+
+    private List<StockCompanySeasonIncome> parseDataV2(Document document) {
+        List<StockCompanySeasonIncome> result = new ArrayList<>();
+
+        Elements tables = document.select("table.hasBorder");
+
+        for (Element table : tables) {
+            Elements trs = table.select("tr");
+
+            Integer epsIdx = null;
+            for (Element tr : trs) {
+                if (tr.hasClass("tblHead")) {
+                    epsIdx = null;
+                    Elements ths = tr.select("th");
+                    for (int idx = 0; idx < ths.size(); idx++) {
+                        Element th = ths.get(idx);
+                        if (th.text().contains("基本每股盈餘")) {
+                            epsIdx = idx;
+                            break;
+                        }
+                    }
+                } else {
+                    if (epsIdx == null) break;
+
+                    Elements tds = tr.select("td");
+                    if (tds.size() < epsIdx + 1) break;
+
+                    try {
+                        String stockCode = StringUtils.trim(StringEscapeUtils.unescapeHtml4(tds.get(0).text()));
+                        String epsCell = StringUtils.trimToNull(StringEscapeUtils.unescapeHtml4(tds.get(epsIdx).text()));
+                        Double esp = epsCell != null ? new DecimalFormat().parse(epsCell).doubleValue() : null;
+
+                        StockCompanySeasonIncome entity = new StockCompanySeasonIncome(stockCode, this.year, this.season, esp);
+                        log.debug("entity: {}", entity);
+                        result.add(entity);
+
+                    } catch (Exception e) {
+                        log.error("Parse error: tr = " + tr, e);
+                    }
+                }
+            }
+        }
+        return result;
     }
 
 }
