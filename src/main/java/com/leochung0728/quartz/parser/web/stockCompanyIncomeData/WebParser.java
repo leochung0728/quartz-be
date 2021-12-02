@@ -157,7 +157,7 @@ public class WebParser {
 					StockCompanyIncome companyIncome = new StockCompanyIncome(stockCode, this.year, this.month, income, lastMonthIncome, lastYearIncome, lastMonthIncreaseRatio, lastYearIncreaseRatio, cumulativeIncome, lastYearCumulativeIncome, lastYearCumulativeIncreaseRatio, remark);
 					stockCompanyIncomes.add(companyIncome);
 				} catch (Exception e) {
-					log.error("Parse error: tr = " + tr, e);
+					log.error(String.format("[%s, %s] Parse error : tr = %s", this.year, this.month, tr), e);
 				}
 			}
 		}
