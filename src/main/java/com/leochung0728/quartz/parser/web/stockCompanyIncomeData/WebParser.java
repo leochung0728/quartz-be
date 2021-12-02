@@ -1,6 +1,7 @@
 package com.leochung0728.quartz.parser.web.stockCompanyIncomeData;
 
 import com.leochung0728.quartz.table.StockCompanyIncome;
+import com.leochung0728.quartz.util.NumberUtils;
 import com.leochung0728.quartz.util.RequestUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,6 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Connection.Method;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,6 @@ import org.springframework.web.util.UriBuilder;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.*;
 
 @Slf4j
@@ -65,7 +64,7 @@ public class WebParser {
 
 		int minguoYear = this.year - 1911;
 
-		for (String type : new String[] {"sii", "otc"}) {
+		for (String type : new String[]{"sii", "otc"}) {
 			if (this.isV1) {
 				Map<String, Object> paramMap = new HashMap<>();
 				paramMap.put("type", type);
@@ -73,7 +72,7 @@ public class WebParser {
 				paramMap.put("month", month);
 				paramMaps.add(paramMap);
 			} else {
-				for (int region : new int[] {0, 1}) {
+				for (int region : new int[]{0, 1}) {
 					Map<String, Object> paramMap = new HashMap<>();
 					paramMap.put("type", type);
 					paramMap.put("minguoYear", minguoYear);
@@ -108,7 +107,7 @@ public class WebParser {
 		}
 		return document;
 	}
-	
+
 	public List<StockCompanyIncome> parseData(Document document) {
 		List<StockCompanyIncome> stockCompanyIncomes = new ArrayList<>();
 
@@ -140,14 +139,14 @@ public class WebParser {
 
 					String stockCode = cell1;
 //					String companyName = cell2;
-					Double income = cell3 != null ? new DecimalFormat().parse(cell3).doubleValue() : null;
-					Double lastMonthIncome = cell4 != null ? new DecimalFormat().parse(cell4).doubleValue() : null;
-					Double lastYearIncome = cell5 != null ? new DecimalFormat().parse(cell5).doubleValue() : null;
-					Double lastMonthIncreaseRatio = cell6 != null ? new DecimalFormat().parse(cell6).doubleValue() : null;
-					Double lastYearIncreaseRatio = cell7 != null ? new DecimalFormat().parse(cell7).doubleValue() : null;
-					Double cumulativeIncome = cell8 != null ? new DecimalFormat().parse(cell8).doubleValue() : null;
-					Double lastYearCumulativeIncome = cell9 != null ? new DecimalFormat().parse(cell9).doubleValue() : null;
-					Double lastYearCumulativeIncreaseRatio = cell10 != null ? new DecimalFormat().parse(cell10).doubleValue() : null;
+					Double income = NumberUtils.isNumeric(cell3) ? new DecimalFormat().parse(cell3).doubleValue() : null;
+					Double lastMonthIncome = NumberUtils.isNumeric(cell4) ? new DecimalFormat().parse(cell4).doubleValue() : null;
+					Double lastYearIncome = NumberUtils.isNumeric(cell5) ? new DecimalFormat().parse(cell5).doubleValue() : null;
+					Double lastMonthIncreaseRatio = NumberUtils.isNumeric(cell6) ? new DecimalFormat().parse(cell6).doubleValue() : null;
+					Double lastYearIncreaseRatio = NumberUtils.isNumeric(cell7) ? new DecimalFormat().parse(cell7).doubleValue() : null;
+					Double cumulativeIncome = NumberUtils.isNumeric(cell8) ? new DecimalFormat().parse(cell8).doubleValue() : null;
+					Double lastYearCumulativeIncome = NumberUtils.isNumeric(cell9) ? new DecimalFormat().parse(cell9).doubleValue() : null;
+					Double lastYearCumulativeIncreaseRatio = NumberUtils.isNumeric(cell10) ? new DecimalFormat().parse(cell10).doubleValue() : null;
 
 					String remark = null;
 					if (tds.size() >= 11 && !this.isV1()) {
