@@ -11,18 +11,19 @@ public abstract class AbstractStatefulJob extends QuartzJobBean {
 	public static final String[] JOB_DETAIL_PROPERTIES = { "p1", "p2", "p3", "p4" };
 	static Map<String, RegisteredClass> classNameMap = new HashMap<>();
 
-	public static enum RegisteredClass {
-		測試作業(TestJob.class, "測試作業"),
-		醫療費用核退上限(WebMedicalExpensesRefundCapJob.class, "醫療費用核退上限"),
-		醫事查詢系統(WebMASearchJob.class, "醫事查詢系統"),
+	public enum RegisteredClass {
+		TestJob(TestJob.class, "測試作業"),
+		WebMedicalExpensesRefundCapJob(WebMedicalExpensesRefundCapJob.class, "醫療費用核退上限"),
+		WebMASearchJob(WebMASearchJob.class, "醫事查詢系統"),
 		StockDataJob(StockDataJob.class, "股市資料爬蟲"),
 		StockTransactionDataJob(StockTransactionDataJob.class, "股市交易資料爬蟲"),
-		StockCompanyIncomeDataJob(StockCompanyIncomeDataJob.class, "股市公司受益爬蟲");
+		StockCompanyIncomeDataJob(StockCompanyIncomeDataJob.class, "股市公司收益爬蟲"),
+		StockCompanySeasonIncomeDataJob(StockCompanySeasonIncomeDataJob.class, "股市公司季收益爬蟲");
 
-		private Class<? extends AbstractStatefulJob> clazz;
-		private String jobName;
+		private final Class<? extends AbstractStatefulJob> clazz;
+		private final String jobName;
 
-		private RegisteredClass(Class<? extends AbstractStatefulJob> clazz, String jobName) {
+		RegisteredClass(Class<? extends AbstractStatefulJob> clazz, String jobName) {
 			this.clazz = clazz;
 			this.jobName = jobName;
 		}
