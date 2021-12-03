@@ -14,14 +14,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @ToString
 @Getter
@@ -72,16 +68,18 @@ public class StockTransaction {
 		this.low = low;
 		this.close = close;
 		this.adjColse = adjColse;
+		this.volume = volume;
 	}
 
 	@ToString
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	class CompositeKeys implements Serializable {
-		private static final long serialVersionUID = -6519749215443877589L;
+	@EqualsAndHashCode
+	public class CompositeKeys implements Serializable {
 		private String isinCode;
 		private Date date;
+
+		public CompositeKeys() {}
 
 		public CompositeKeys(String isinCode, Date date) {
 			this.isinCode = isinCode;

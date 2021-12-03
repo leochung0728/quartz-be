@@ -139,14 +139,14 @@ public class WebParser {
 
 					String stockCode = cell1;
 //					String companyName = cell2;
-					Double income = NumberUtils.isNumeric(cell3) ? new DecimalFormat().parse(cell3).doubleValue() : null;
-					Double lastMonthIncome = NumberUtils.isNumeric(cell4) ? new DecimalFormat().parse(cell4).doubleValue() : null;
-					Double lastYearIncome = NumberUtils.isNumeric(cell5) ? new DecimalFormat().parse(cell5).doubleValue() : null;
-					Double lastMonthIncreaseRatio = NumberUtils.isNumeric(cell6) ? new DecimalFormat().parse(cell6).doubleValue() : null;
-					Double lastYearIncreaseRatio = NumberUtils.isNumeric(cell7) ? new DecimalFormat().parse(cell7).doubleValue() : null;
-					Double cumulativeIncome = NumberUtils.isNumeric(cell8) ? new DecimalFormat().parse(cell8).doubleValue() : null;
-					Double lastYearCumulativeIncome = NumberUtils.isNumeric(cell9) ? new DecimalFormat().parse(cell9).doubleValue() : null;
-					Double lastYearCumulativeIncreaseRatio = NumberUtils.isNumeric(cell10) ? new DecimalFormat().parse(cell10).doubleValue() : null;
+					Double income = NumberUtils.parseDouble(cell3);
+					Double lastMonthIncome = NumberUtils.parseDouble(cell4);
+					Double lastYearIncome = NumberUtils.parseDouble(cell5);
+					Double lastMonthIncreaseRatio = NumberUtils.parseDouble(cell6);
+					Double lastYearIncreaseRatio = NumberUtils.parseDouble(cell7);
+					Double cumulativeIncome = NumberUtils.parseDouble(cell8);
+					Double lastYearCumulativeIncome = NumberUtils.parseDouble(cell9);
+					Double lastYearCumulativeIncreaseRatio = NumberUtils.parseDouble(cell10);
 
 					String remark = null;
 					if (tds.size() >= 11 && !this.isV1()) {
