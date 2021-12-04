@@ -19,7 +19,7 @@ class StockTransationServiceTest {
 
     @Test
     public void testSave() {
-        StockTransaction entity = new StockTransaction("TW0003511002", new Date(), null, null, null, null, null, null);
+        StockTransaction entity = new StockTransaction("TW0003511002", new Date(2021,12,3), null, null, null, null, null, null);
         dao.save(entity);
     }
 }

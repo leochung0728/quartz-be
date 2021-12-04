@@ -1,30 +1,20 @@
 package com.leochung0728.quartz.table;
 
-import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.leochung0728.quartz.table.key.StockTransactionKeys;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@ToString
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@IdClass(StockTransaction.CompositeKeys.class)
+@IdClass(StockTransactionKeys.class)
 @Table(name = "stock_transaction")
 @EntityListeners(AuditingEntityListener.class)
 public class StockTransaction {
@@ -69,22 +59,6 @@ public class StockTransaction {
 		this.close = close;
 		this.adjColse = adjColse;
 		this.volume = volume;
-	}
-
-	@ToString
-	@Getter
-	@Setter
-	@EqualsAndHashCode
-	public class CompositeKeys implements Serializable {
-		private String isinCode;
-		private Date date;
-
-		public CompositeKeys() {}
-
-		public CompositeKeys(String isinCode, Date date) {
-			this.isinCode = isinCode;
-			this.date = date;
-		}
 	}
 
 }

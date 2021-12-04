@@ -6,6 +6,7 @@ import com.leochung0728.quartz.service.StockCompanySeasonIncomeService;
 import com.leochung0728.quartz.table.StockCompanySeasonIncome;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -59,7 +60,7 @@ public class StockCompanySeasonIncomeDataJob extends AbstractStatefulJob {
 				startSeason = Integer.parseInt(matcher.group(2));
 			}
 
-			matcher = PATTERN.matcher(endYearSeasonStr);
+			matcher = PATTERN.matcher(StringUtils.trimToEmpty(endYearSeasonStr));
 			if (!matcher.find()) {
 				YearMonth now = YearMonth.now();
 				endYear = now.getYear();
@@ -78,6 +79,7 @@ public class StockCompanySeasonIncomeDataJob extends AbstractStatefulJob {
 			for (int y = startYear; y <= endYear; y++) {
 				for (int s = startSeason; s <= 4; s++) {
 					if (y == endYear && s > endSeason) break;
+					Thread.sleep((long) (Math.random() * 5000 + 5000));
 					futures.add(completionService.submit(new Worker(y, s)));
 				}
 			}
@@ -119,7 +121,7 @@ public class StockCompanySeasonIncomeDataJob extends AbstractStatefulJob {
 
 				for (String url : searchUrls) {
 					log.info("[{}/{}] url: {}", this.year, this.season, url);
-					Document document = parser.search(url);
+					Document document = parser.search(url, 3);
 					List<StockCompanySeasonIncome> data = parser.parseData(document);
 					log.info("[{}/{}] data size: {}", this.year, this.season, data.size());
 					result.addAll(data);
