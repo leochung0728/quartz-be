@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString
+@ToString(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -40,20 +40,21 @@ public class Stock {
 	// 有價證券代號
 	@NaturalId
 	@Column()
+	@ToString.Include
 	private String stockCode;
 	// 有價證券名稱
 	@Column()
 	private String stockName;
 	// 市場別
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
 	@JoinColumn()
 	private StockMarketType marketType;
 	// 有價證券別
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
 	@JoinColumn()
 	private StockIssueType issueType;
 	// 產業別
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
 	@JoinColumn()
 	private StockIndustryType industryType;
 	// 發行日

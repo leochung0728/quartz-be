@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -101,5 +102,14 @@ public class StockService {
 	@Transactional
 	public List<Stock> saveAll(List<Stock> stocks) {
 		return stockDao.saveAll(stocks);
+	}
+
+	public Stock getById(String isinCode) {
+		return stockDao.getById(isinCode);
+	}
+
+	public Stock findByStockCode(String stockCode) {
+		List<Stock> stocks = stockDao.findByStockCode(stockCode);
+		return CollectionUtils.isNotEmpty(stocks) ? stocks.get(0) : null;
 	}
 }

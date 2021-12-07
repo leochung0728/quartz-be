@@ -1,24 +1,23 @@
 package com.leochung0728.quartz.service;
 
-import com.leochung0728.quartz.dao.StockTransationDao;
-import com.leochung0728.quartz.table.StockTransaction;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import tech.tablesaw.api.Table;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class StockTransationServiceTest {
+class StockDataServiceTest {
     @Autowired
-    StockTransationDao dao;
+    StockDataService dataService;
 
     @Test
-    public void testSave() {
-        StockTransaction entity = new StockTransaction("TW0003511002", new Date(2021,12,3), null, null, null, null, null, null);
-        dao.save(entity);
+    void getStockData() {
+        Table table = this.dataService.getStockData("1101", LocalDate.of(2021, 01, 01), LocalDate.now());
+        table.print(5);
     }
 }
