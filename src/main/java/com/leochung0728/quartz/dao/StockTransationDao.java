@@ -12,8 +12,8 @@ import java.util.List;
 
 @Repository("StockTransationDao")
 public interface StockTransationDao extends JpaRepository<StockTransaction, StockTransactionKeys> {
-    List<StockTransaction> findByIsinCodeAndDateBetween(String isinCode, long startDate, long endDate, Sort sort);
-    List<StockTransaction> findByIsinCodeAndDateLessThanEqual(String isinCode, long endDate, Sort sort);
-    List<StockTransaction> findByIsinCodeAndDateGreaterThanEqual(String isinCode, long startDate, Sort sort);
+    List<StockTransaction> findByIsinCodeAndDateBetween(String isinCode, Date startDate, Date endDate, Sort sort);
+    List<StockTransaction> findByIsinCodeAndDateLessThanEqual(String isinCode, Date endDate, Sort sort);
+    List<StockTransaction> findByIsinCodeAndDateGreaterThanEqual(String isinCode, Date startDate, Sort sort);
     List<StockTransaction> findByIsinCode(String isinCode, Sort sort);
 }

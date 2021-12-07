@@ -1,5 +1,6 @@
 package com.leochung0728.quartz.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import tech.tablesaw.api.Table;
 
 import java.time.LocalDate;
 
+@Slf4j
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class StockDataServiceTest {
@@ -18,6 +20,6 @@ class StockDataServiceTest {
     @Test
     void getStockData() {
         Table table = this.dataService.getStockData("1101", LocalDate.of(2021, 01, 01), LocalDate.now());
-        table.print(5);
+        log.info(table.print(5));
     }
 }

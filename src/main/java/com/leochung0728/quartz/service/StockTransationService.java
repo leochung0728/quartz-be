@@ -31,17 +31,17 @@ public class StockTransationService {
 
 	public List<StockTransaction> findByIsinCodeAndDateBetween(@NotNull String isinCode, @NotNull LocalDate startDate, @NotNull LocalDate endDate, Sort sort) {
 		sort = sort == null ? Sort.unsorted() : sort;
-		return this.stockTransationDao.findByIsinCodeAndDateBetween(isinCode, DateUtils.toTimeStamp(startDate), DateUtils.toTimeStamp(endDate), sort);
+		return this.stockTransationDao.findByIsinCodeAndDateBetween(isinCode, DateUtils.covertToDate(startDate), DateUtils.covertToDate(endDate), sort);
 	}
 
 	public List<StockTransaction> findByIsinCodeAndDateLessThanEqual(@NotNull String isinCode, @NotNull LocalDate startDate, Sort sort) {
 		sort = sort == null ? Sort.unsorted() : sort;
-		return this.stockTransationDao.findByIsinCodeAndDateLessThanEqual(isinCode, DateUtils.toTimeStamp(startDate), sort);
+		return this.stockTransationDao.findByIsinCodeAndDateLessThanEqual(isinCode, DateUtils.covertToDate(startDate), sort);
 	}
 
 	public List<StockTransaction> findByIsinCodeAndDateGreaterThanEqual(@NotNull String isinCode, @NotNull LocalDate endDate, Sort sort) {
 		sort = sort == null ? Sort.unsorted() : sort;
-		return this.stockTransationDao.findByIsinCodeAndDateGreaterThanEqual(isinCode, DateUtils.toTimeStamp(endDate), sort);
+		return this.stockTransationDao.findByIsinCodeAndDateGreaterThanEqual(isinCode, DateUtils.covertToDate(endDate), sort);
 	}
 
 	public List<StockTransaction> findByIsinCode(@NotNull String isinCode, Sort sort) {

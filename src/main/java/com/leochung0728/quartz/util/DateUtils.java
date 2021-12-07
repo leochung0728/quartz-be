@@ -13,4 +13,8 @@ public class DateUtils {
     public static long toTimeStamp(LocalDate date) {
         return date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
+
+    public static Date covertToDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
 }
