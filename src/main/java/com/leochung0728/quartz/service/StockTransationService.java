@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import com.leochung0728.quartz.util.DateUtils;
 import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -30,17 +31,17 @@ public class StockTransationService {
 
 	public List<StockTransaction> findByIsinCodeAndDateBetween(@NotNull String isinCode, @NotNull LocalDate startDate, @NotNull LocalDate endDate, Sort sort) {
 		sort = sort == null ? Sort.unsorted() : sort;
-		return this.stockTransationDao.findByIsinCodeAndDateBetween(isinCode, startDate.toEpochDay(), endDate.toEpochDay(), sort);
+		return this.stockTransationDao.findByIsinCodeAndDateBetween(isinCode, DateUtils.toTimeStamp(startDate), DateUtils.toTimeStamp(endDate), sort);
 	}
 
 	public List<StockTransaction> findByIsinCodeAndDateLessThanEqual(@NotNull String isinCode, @NotNull LocalDate startDate, Sort sort) {
 		sort = sort == null ? Sort.unsorted() : sort;
-		return this.stockTransationDao.findByIsinCodeAndDateLessThanEqual(isinCode, startDate.toEpochDay(), sort);
+		return this.stockTransationDao.findByIsinCodeAndDateLessThanEqual(isinCode, DateUtils.toTimeStamp(startDate), sort);
 	}
 
 	public List<StockTransaction> findByIsinCodeAndDateGreaterThanEqual(@NotNull String isinCode, @NotNull LocalDate endDate, Sort sort) {
 		sort = sort == null ? Sort.unsorted() : sort;
-		return this.stockTransationDao.findByIsinCodeAndDateGreaterThanEqual(isinCode, endDate.toEpochDay(), sort);
+		return this.stockTransationDao.findByIsinCodeAndDateGreaterThanEqual(isinCode, DateUtils.toTimeStamp(endDate), sort);
 	}
 
 	public List<StockTransaction> findByIsinCode(@NotNull String isinCode, Sort sort) {
