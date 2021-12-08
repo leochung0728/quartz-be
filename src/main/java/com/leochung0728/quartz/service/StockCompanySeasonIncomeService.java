@@ -22,4 +22,8 @@ public class StockCompanySeasonIncomeService {
 	public List<StockCompanySeasonIncome> saveAll(List<StockCompanySeasonIncome> stockCompanySeasonIncome) {
 		return stockCompanySeasonIncomeDao.saveAll(stockCompanySeasonIncome);
 	}
+
+	public List<StockCompanySeasonIncome> findByStockCode(String stockCode) {
+		return stockCompanySeasonIncomeDao.findByStockCode(stockCode);
+	}
 }

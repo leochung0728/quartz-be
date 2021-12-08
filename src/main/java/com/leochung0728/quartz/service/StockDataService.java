@@ -1,6 +1,7 @@
 package com.leochung0728.quartz.service;
 
 import com.leochung0728.quartz.table.Stock;
+import com.leochung0728.quartz.table.StockCompanySeasonIncome;
 import com.leochung0728.quartz.table.StockTransaction;
 import com.leochung0728.quartz.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,10 @@ public class StockDataService {
     @Autowired
     StockTransationService transationService;
 
-    public Table getStockData(
+    @Autowired
+    StockCompanySeasonIncomeService seasonIncomeService;
+
+    public Table getStockTransactionData(
             @NotBlank(message = "stockCode should not be blank") String stockCode,
             @NotNull(message = "startDate should not be null") LocalDate startDate,
             @NotNull(message = "endDate should not be null") LocalDate endDate) {
@@ -68,5 +72,28 @@ public class StockDataService {
         LongColumn col7 = LongColumn.create("volume", volume.stream().mapToLong(Long::longValue));
 
         return table.addColumns(col1, col2, col3, col4, col5, col6, col7);
+    }
+
+    public Table getStockEPSData(@NotBlank(message = "stockCode should not be blank") String stockCode) {
+        List<StockCompanySeasonIncome> seasonIncomes = seasonIncomeService.findByStockCode(stockCode);
+        log.info("[{}] 公司季資料筆數 = {}", stockCode, seasonIncomes.size());
+
+        Table table = Table.create(stockCode);
+        Integer[] year = new Integer[seasonIncomes.size()];
+        Integer[] season = new Integer[seasonIncomes.size()];
+        List<Double> eps = new ArrayList<>();
+
+        StockCompanySeasonIncome seasonIncome;
+        for (int idx = 0; idx < seasonIncomes.size(); idx++) {
+            seasonIncome = seasonIncomes.get(idx);
+            year[idx] = seasonIncome.getYear();
+            season[idx] = seasonIncome.getSeason();
+            eps.add(seasonIncome.getEps());
+        }
+        IntColumn col1 = IntColumn.create("year", year);
+        IntColumn col2 = IntColumn.create("season", season);
+        DoubleColumn col3 = DoubleColumn.create("eps", eps);
+
+        return table.addColumns(col1, col2, col3);
     }
 }

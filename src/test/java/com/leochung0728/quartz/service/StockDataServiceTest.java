@@ -18,8 +18,8 @@ class StockDataServiceTest {
     StockDataService dataService;
 
     @Test
-    void getStockData() {
-        Table table = this.dataService.getStockData("1101", LocalDate.of(2021, 01, 01), LocalDate.now());
+    void getStockTransactionData() {
+        Table table = this.dataService.getStockTransactionData("1101", LocalDate.of(2021, 01, 01), LocalDate.now());
         log.info(table.print(5));
     }
 }
