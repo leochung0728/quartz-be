@@ -3,6 +3,7 @@ package com.leochung0728.quartz.service;
 import com.leochung0728.quartz.dao.StockCompanySeasonIncomeDao;
 import com.leochung0728.quartz.table.StockCompanySeasonIncome;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,6 @@ public class StockCompanySeasonIncomeService {
 	}
 
 	public List<StockCompanySeasonIncome> findByStockCode(String stockCode) {
-		return stockCompanySeasonIncomeDao.findByStockCode(stockCode);
+		return stockCompanySeasonIncomeDao.findByStockCode(stockCode, Sort.by(Sort.Direction.ASC, "year", "season"));
 	}
 }
