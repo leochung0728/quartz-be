@@ -76,4 +76,5 @@ public class EPSMeanCompareStrategy implements Strategy {
     public enum CompareOperator {
         GREATER_EQUAL, GREATER, LESS_EQUAL, LESS;
     }
+
 }
