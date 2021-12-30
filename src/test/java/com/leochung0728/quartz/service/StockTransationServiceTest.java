@@ -46,7 +46,6 @@ class StockTransationServiceTest {
     @Test
     public void test() {
         BarSeries series = new BaseBarSeriesBuilder().withName("0050").build();
-
         List<StockTransaction> transations = service.findByIsinCode("TW0000050004", Sort.by(Sort.Direction.ASC, "date"));
 
         for (StockTransaction t : transations) {
